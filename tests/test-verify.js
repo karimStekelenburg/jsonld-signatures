@@ -21,6 +21,30 @@ module.exports = async function(options) {
 
   describe('should not verify', function() {
     describe('depth two', function() {
+      it('strictDocumentLoader',
+        async () => {
+          const Suite = suites[suiteName];
+          const signed = clone(mock.suites[suiteName].securityContextSigned);
+          signed['@context'].pop();
+          // change the context url here to
+          // point to a child with an invalid id.
+          const invalidChildUrl = 'https://invalid-context-url';
+          signed['@context'].push(invalidChildUrl);
+          const verifySuite = new Suite(
+            mock.suites[suiteName].parameters.verify);
+          const result = await jsigs.verify(signed, {
+            suite: verifySuite,
+            purpose: new NoOpProofPurpose()
+          });
+          console.log('strictDocumentLoader', result);
+          assert.isFalse(
+            result.verified,
+            'Expected a context with an invalid url to not be verified');
+          assert.isNotNull(result.error);
+          assert.isUndefined(result.results);
+          assert.isNotNull(result.error['jsonld.InvalidUrl']);
+        });
+
       it('if the @context url can not be accessed in the child context',
         async () => {
           const Suite = suites[suiteName];
@@ -37,7 +61,6 @@ module.exports = async function(options) {
             suite: verifySuite,
             purpose: new NoOpProofPurpose()
           });
-          console.log('depth 2 result', result);
           assert.isFalse(
             result.verified,
             'Expected a context with an invalid url to not be verified');
@@ -45,6 +68,30 @@ module.exports = async function(options) {
           assert.isUndefined(result.results);
           assert.isNotNull(result.error['jsonld.InvalidUrl']);
         });
+      it('if the @context url is invalid and we using node documentLoader',
+        async () => {
+          const Suite = suites[suiteName];
+          const signed = clone(mock.suites[suiteName].securityContextSigned);
+          signed['@context'].pop();
+          // change the context url here to
+          // point to a child with an invalid id.
+          const invalidChildUrl = 'http://localhost:3424/';
+          signed['@context'].push(invalidChildUrl);
+          const verifySuite = new Suite(
+            mock.suites[suiteName].parameters.verify);
+          const result = await jsigs.verify(signed, {
+            documentLoader,
+            suite: verifySuite,
+            purpose: new NoOpProofPurpose()
+          });
+          assert.isFalse(
+            result.verified,
+            'Expected a context with an invalid url to not be verified');
+          assert.isNotNull(result.error);
+          assert.isUndefined(result.results);
+          assert.isNotNull(result.error['jsonld.InvalidUrl']);
+        });
+
     });
     describe('depth one', function() {
       it('if the @context url can not be accessed in the initial context',
@@ -102,7 +149,6 @@ module.exports = async function(options) {
                 .authenticationController
             })
           });
-          console.log(result);
         });
     });
   });
