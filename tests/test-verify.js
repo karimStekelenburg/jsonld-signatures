@@ -36,7 +36,6 @@ module.exports = async function(options) {
             suite: verifySuite,
             purpose: new NoOpProofPurpose()
           });
-          console.log('strictDocumentLoader', result);
           assert.isFalse(
             result.verified,
             'Expected a context with an invalid url to not be verified');
