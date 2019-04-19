@@ -28,23 +28,16 @@ module.exports = async function(options) {
           signed['@context'].pop();
           // change the context url here to
           // point to a child with an invalid id.
-          const invalidChildUrl = 'https://invalid-creator';
+          const invalidChildUrl = 'https://invalid-context-url';
           signed['@context'].push(invalidChildUrl);
           const verifySuite = new Suite(
             mock.suites[suiteName].parameters.verify);
           const result = await jsigs.verify(signed, {
             documentLoader: testLoader,
             suite: verifySuite,
-            purpose: new AuthenticationProofPurpose({
-              challenge: 'abc',
-              domain: 'example.com',
-              date: new Date('01-01-1970'),
-              maxTimestampDelta: 0,
-              controller: mock.suites[suiteName].parameters
-                .authenticationController
-            })
+            purpose: new NoOpProofPurpose()
           });
-          console.log(result);
+          console.log('depth 2 result', result);
           assert.isFalse(
             result.verified,
             'Expected a context with an invalid url to not be verified');
@@ -59,21 +52,14 @@ module.exports = async function(options) {
           const Suite = suites[suiteName];
           const signed = clone(mock.suites[suiteName].securityContextSigned);
           signed['@context'].pop();
-          // misspel the context url here.
+          // misspell the context url here.
           signed['@context'].push('https://e3id.org/sacurity/v1');
           const verifySuite = new Suite(
             mock.suites[suiteName].parameters.verify);
           const result = await jsigs.verify(signed, {
             documentLoader,
             suite: verifySuite,
-            purpose: new AuthenticationProofPurpose({
-              challenge: 'abc',
-              domain: 'example.com',
-              date: new Date('01-01-1970'),
-              maxTimestampDelta: 0,
-              controller: mock.suites[suiteName].parameters
-                .authenticationController
-            })
+            purpose: new NoOpProofPurpose()
           });
           assert.isFalse(
             result.verified,

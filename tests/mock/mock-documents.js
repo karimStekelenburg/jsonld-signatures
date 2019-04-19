@@ -4,13 +4,16 @@ const {NOOP_PROOF_PURPOSE_URI} = require('./noop-purpose');
 const mock = {};
 module.exports = mock;
 
-mock.securityContextSignedInvalidCreator = {
-  id: 'https://invalid-creator',
+mock.securityContextSignedInvalidContextUrl = {
+  id: 'https://invalid-context-url',
   ...securityContextTestDoc,
+  '@context': [
+    {'@version': 1.1},
+    'https://do-not-resolve-dsfsdfs.org'
+  ],
   proof: {
     type: 'Ed25519Signature2018',
     created: '2018-02-13T21:26:08Z',
-    creator: null,
     jws:
       'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19' +
       '..' +
