@@ -22,7 +22,8 @@ if(!require('semver').gte(process.version, '8.6.0')) {
 }
 
 const assert = require('chai').assert;
-const common = require('./test-common');
+// TODO: change back to test-normal
+const common = require('./test-verify');
 const constants = require('../lib/constants');
 const jsigs = require('..');
 const mock = require('./mock/mock');

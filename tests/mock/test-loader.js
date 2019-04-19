@@ -4,6 +4,7 @@
 'use strict';
 
 const {controllers, publicKeys} = require('./keys');
+const mockDocuments = require('./mock-documents');
 
 const documents = {};
 for(const key in publicKeys) {
@@ -11,6 +12,10 @@ for(const key in publicKeys) {
 }
 for(const key in controllers) {
   documents[controllers[key].id] = controllers[key];
+}
+
+for(const key in mockDocuments) {
+  documents[mockDocuments[key].id] = mockDocuments[key];
 }
 
 module.exports = async url => {
