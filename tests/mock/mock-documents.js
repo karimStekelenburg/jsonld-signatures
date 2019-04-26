@@ -1,11 +1,24 @@
 const {securityContextTestDoc} = require('./test-document');
 const {NOOP_PROOF_PURPOSE_URI} = require('./noop-purpose');
+const documents = require('./documents/');
 
 const mock = {};
 module.exports = mock;
 
+function contextFactory({url, value}) {
+  return {
+    id: url,
+    ...securityContextTestDoc,
+    ...value
+  };
+}
+
+for(const key in documents) {
+  mock[key] = contextFactory(documents[key]);
+}
+
 mock.securityContextSignedInvalidContextUrl = {
-  id: 'https://invalid-context-url',
+  id: 'https://context-not-found',
   ...securityContextTestDoc,
   '@context': [
     {'@version': 1.1},
@@ -22,4 +35,3 @@ mock.securityContextSignedInvalidContextUrl = {
     proofPurpose: NOOP_PROOF_PURPOSE_URI
   }
 };
-

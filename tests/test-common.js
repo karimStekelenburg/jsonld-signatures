@@ -937,6 +937,7 @@ describe('JSON-LD Signatures', () => {
             ...mock.suites[suiteName].parameters.sign,
             date: new Date('01-01-1970')
           });
+          console.log('sign suite', signSuite);
           const testDoc = clone(mock.securityContextTestDoc);
           const signed = await jsigs.sign(testDoc, {
             documentLoader: testLoader,
@@ -949,6 +950,7 @@ describe('JSON-LD Signatures', () => {
 
           const verifySuite = new Suite(
             mock.suites[suiteName].parameters.verify);
+          console.log('verify', verifySuite);
           const result = await jsigs.verify(signed, {
             documentLoader: testLoader,
             suite: verifySuite,
