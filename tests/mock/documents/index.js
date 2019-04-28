@@ -15,6 +15,10 @@ const invalidContexts = {
     url: 'https://invalid-id.org',
     value: require('./invalid_id.jsonld')
   },
+  invalidSignature: {
+    url: 'https://invalidSignature.digitalbazaar.org',
+    value: require('./overwritesSignature.jsonld')
+  },
   nullVersion: {
     url: 'https://null-version.org',
     value: require('./null_version.jsonld')

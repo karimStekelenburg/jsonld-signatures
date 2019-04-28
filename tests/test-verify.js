@@ -151,6 +151,27 @@ module.exports = async function(options) {
           assert.equal(result.error.name, 'jsonld.SyntaxError');
         });
 
+      it('if the child context overwrites the signature key',
+        async () => {
+          // TODO: is this a security issue?
+          const Suite = suites[suiteName];
+          const signed = clone(mock.suites[suiteName].securityContextSigned);
+          signed['@context'].push(documents.invalidSignature.url);
+          const verifySuite = new Suite(
+            mock.suites[suiteName].parameters.verify);
+          const result = await jsigs.verify(signed, {
+            documentLoader: testLoader,
+            suite: verifySuite,
+            purpose: new NoOpProofPurpose()
+          });
+          assert.isFalse(
+            result.verified,
+            'Expected a context with a null type to not be verified');
+          assert.isNotNull(result.error);
+          assert.isUndefined(result.results);
+          assert.equal(result.error.name, 'Error');
+        });
+
       it.skip('if the child context is null',
         async () => {
           const Suite = suites[suiteName];
